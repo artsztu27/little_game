@@ -22,12 +22,12 @@ const generateMoles = (amount: number) =>
     }));
 
 const usePersistentState = (key: string = "", initialValue: number) => {
-    const localStorageVal = window.localStorage.getItem(key);
+    const localStorageVal = globalThis.window?.localStorage.getItem(key);
     const [state, setState] = useState(
         localStorageVal ? JSON.parse(localStorageVal.toString()) : initialValue
     );
     useEffect(() => {
-        window.localStorage.setItem(key, state);
+        globalThis.window?.localStorage.setItem(key, state);
     }, [key, state]);
     return [state, setState];
 };
