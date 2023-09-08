@@ -1,5 +1,11 @@
 "use client";
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, {
+    Fragment,
+    MutableRefObject,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import gsap from "gsap";
 
 const TIME_LIMIT = 30000;
@@ -8,18 +14,17 @@ const NUMBER_OF_MOLES = 5;
 const POINTS_MULTIPLIER = 0.9;
 const TIME_MULTIPLIER = 1.25;
 
-const generateMoles = (amount) =>
-    new Array(amount).fill().map(() => ({
+const generateMoles = (amount: number) =>
+    new Array(amount).fill(0).map(() => ({
         speed: gsap.utils.random(0.5, 1),
         delay: gsap.utils.random(0.5, 4),
         points: MOLE_SCORE,
     }));
 
-const usePersistentState = (key, initialValue) => {
+const usePersistentState = (key: string = "", initialValue: number) => {
+    const localStorageVal = window.localStorage.getItem(key);
     const [state, setState] = useState(
-        window.localStorage.getItem(key)
-            ? JSON.parse(window.localStorage.getItem(key))
-            : initialValue
+        localStorageVal ? JSON.parse(localStorageVal.toString()) : initialValue
     );
     useEffect(() => {
         window.localStorage.setItem(key, state);
@@ -27,29 +32,22 @@ const usePersistentState = (key, initialValue) => {
     return [state, setState];
 };
 
-const useAudio = (src, volume = 1) => {
-    const [audio, setAudio] = useState(null);
-    useEffect(() => {
-        const AUDIO = new Audio(src);
-        AUDIO.volume = volume;
-        setAudio(AUDIO);
-    }, [src, volume]);
-    return {
-        play: () => audio.play(),
-        pause: () => audio.pause(),
-        stop: () => {
-            audio.pause();
-            audio.currentTime = 0;
-        },
-    };
-};
+const Moles = ({ children }: { children: JSX.Element[] }) => (
+    <div className="moles">{children}</div>
+);
 
-const Moles = ({ children }) => <div className="moles">{children}</div>;
-const Mole = ({ onWhack, points, delay, speed, pointsMin = 10 }) => {
+type MoleType = {
+    onWhack: (point: number) => void;
+    points: number;
+    delay: number;
+    speed: number;
+    pointsMin?: number;
+};
+const Mole = ({ onWhack, points, delay, speed, pointsMin = 10 }: MoleType) => {
     const [whacked, setWhacked] = useState(false);
-    const bobRef = useRef(null);
-    const pointsRef = useRef(points);
-    const buttonRef = useRef(null);
+    const bobRef = useRef<any>(null);
+    const pointsRef = useRef<number>(points);
+    const buttonRef = useRef<HTMLButtonElement>(null);
     useEffect(() => {
         gsap.set(buttonRef.current, {
             yPercent: 100,
@@ -69,14 +67,14 @@ const Mole = ({ onWhack, points, delay, speed, pointsMin = 10 }) => {
             },
         });
         return () => {
-            if (bobRef.current) bobRef.current.kill();
+            if (bobRef.current) bobRef.current?.kill();
         };
     }, [pointsMin, delay, speed]);
 
     useEffect(() => {
         if (whacked) {
             pointsRef.current = points;
-            bobRef.current.pause();
+            bobRef!.current!.pause();
             gsap.to(buttonRef.current, {
                 yPercent: 100,
                 duration: 0.1,
@@ -106,14 +104,22 @@ const Mole = ({ onWhack, points, delay, speed, pointsMin = 10 }) => {
         </div>
     );
 };
-const Score = ({ value }) => (
+
+const Score = ({ value }: { value: number }) => (
     <div className="info-text">{`Score: ${value}`}</div>
 );
 
-const Timer = ({ time, interval = 1000, onEnd }) => {
-    const [internalTime, setInternalTime] = useState(time);
-    const timerRef = useRef(time);
-    const timeRef = useRef(time);
+type TimerType = {
+    time: number;
+    interval?: number;
+    onEnd: () => void;
+};
+const Timer = ({ time, interval = 1000, onEnd }: TimerType) => {
+    const [internalTime, setInternalTime] = useState<number>(time);
+    const timerRef = useRef<ReturnType<typeof setTimeout>>(
+        time as unknown as ReturnType<typeof setTimeout>
+    );
+    const timeRef = useRef<number>(time);
     useEffect(() => {
         if (internalTime === 0 && onEnd) {
             onEnd();
@@ -138,12 +144,8 @@ const Game = () => {
     const [highScore, setHighScore] = usePersistentState("whac-a-mole-hi", 0);
     const [newHighScore, setNewHighScore] = useState(false);
     const [moles, setMoles] = useState(generateMoles(NUMBER_OF_MOLES));
-    const { play: playSqueak } = useAudio(
-        "https://assets.codepen.io/605876/squeak-in.mp3"
-    );
 
-    const onWhack = (points) => {
-        playSqueak();
+    const onWhack = (points: number) => {
         setScore(score + points);
     };
 
@@ -164,7 +166,7 @@ const Game = () => {
     };
 
     return (
-        <Fragment className="mt-20">
+        <Fragment>
             {!playing && !finished && (
                 <Fragment>
                     <h1>Whac a Mole</h1>
@@ -172,7 +174,7 @@ const Game = () => {
                 </Fragment>
             )}
             {playing && (
-                <Fragment className="mt-20">
+                <Fragment>
                     <button className="mt-20 end-game" onClick={endGame}>
                         End Game
                     </button>
@@ -181,13 +183,13 @@ const Game = () => {
                         <Timer time={TIME_LIMIT} onEnd={endGame} />
                     </div>
                     <Moles>
-                        {moles.map(({ delay, speed, points }, index) => (
+                        {moles.map((item, index) => (
                             <Mole
                                 key={index}
                                 onWhack={onWhack}
-                                points={points}
-                                delay={delay}
-                                speed={speed}
+                                points={item.points}
+                                delay={item.delay}
+                                speed={item.speed}
                             />
                         ))}
                     </Moles>

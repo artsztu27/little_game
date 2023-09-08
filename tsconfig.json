@@ -27,7 +27,7 @@
         "**/*.ts",
         "**/*.tsx",
         ".next/types/**/*.ts",
-        "src/app/popAballoon/Game.js"
+        "src/app/popAballoon/Game.tsx"
     ],
     "exclude": ["node_modules"]
 }
