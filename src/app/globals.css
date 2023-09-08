@@ -2,26 +2,123 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.container-m {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.board {
+    display: grid;
+    grid-template-columns: repeat(6, 75px);
+    grid-gap: 8px;
+}
+.card {
+    border-radius: 4px;
+    text-align: center;
+    height: 75px;
+    font-size: 36px;
+    font-weight: bold;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: all 0.2s;
+    user-select: none;
+}
+.card.gameover {
+    pointer-events: none;
+}
+.card-0 {
+    transform: rotateY(0deg);
+}
+.card.active {
+    transform: rotateY(180deg);
+}
+.card.matched .card-front {
+    background-color: lightgoldenrodyellow;
+    color: white;
+}
+.card-front,
+.card-back {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    backface-visibility: hidden;
+    height: 100%;
+    border-radius: 50%;
+}
+.card-front {
+    transform: rotateY(180deg);
+    background-color: #eee;
+    line-height: 70px;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 50px;
+    z-index: 2;
+}
+.card-back {
+    background-color: #ddd;
+    transform: rotateY(0);
+    z-index: 1;
+}
+.card-back::after {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+}
+.menu {
+    display: flex;
+    justify-content: space-between;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.menu p {
+    font-size: 20px;
+    font-weight: 600;
 }
-
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.reset-btn {
+    margin-left: 10px;
+}
+ol,
+ul {
+    padding-left: 30px;
+}
+.board-row:after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.status {
+    margin-bottom: 10px;
+}
+.square {
+    background: #fff;
+    border: 1px solid #999;
+    float: left;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 34px;
+    height: 34px;
+    margin-right: -1px;
+    margin-top: -1px;
+    padding: 0;
+    text-align: center;
+    width: 34px;
+}
+.square:focus {
+    outline: none;
+}
+.kbd-navigation .square:focus {
+    background: #ddd;
+}
+.game {
+    display: flex;
+    flex-direction: row;
+}
+.game-info {
+    margin-left: 20px;
 }

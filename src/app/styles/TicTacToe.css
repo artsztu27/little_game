@@ -1,0 +1,46 @@
+.game-t .board {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 0px;
+}
+.board_row {
+    display: flex;
+}
+.cell {
+    width: 100px;
+    height: 100px;
+    border-radius: 0;
+    border: 1px solid gray;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 50px;
+    font-weight: 700;
+    background-color: #f2f2f2;
+    outline: none;
+}
+.cell:hover {
+    color: inherit;
+}
+.cell_x {
+    background: #bb76ff;
+    color: white;
+}
+.cell_x:hover {
+    color: white;
+}
+.cell_o {
+    color: blue;
+}
+.cell_o:hover {
+    color: blue;
+}
+.game-t p {
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: 500;
+}
+.game-t .reset {
+    min-width: 200px;
+}
