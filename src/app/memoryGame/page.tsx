@@ -77,7 +77,7 @@ export default function MemoryGame() {
     };
 
     return (
-        <div className="container-m mx-auto px-4 bg-slate-400">
+        <div className="container-m mx-auto px-4 bg-slate-400 mt-2">
             <div className="menu">
                 <p>{`Moves - ${moves}`}</p>
             </div>

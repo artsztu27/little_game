@@ -39,9 +39,10 @@ const Logo = () => {
                 <Image
                     src="/images/logo.png"
                     alt="Logo"
-                    width={width < 1024 ? "180" : "300"}
-                    height={width < 1024 ? "45" : "74"}
+                    width={width < 1024 ? "180" : "200"}
+                    height={width < 1024 ? "40" : "80"}
                     className="relative"
+                    style={{ overflow: "hidden" }}
                 />
             </Link>
             <div
